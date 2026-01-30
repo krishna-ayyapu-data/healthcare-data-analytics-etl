@@ -1,17 +1,15 @@
-/* ----------------------------------------------------
-   Healthcare Data Analysis Queries
-   Author: Krishna Vibhavasu Ayyapu
-   Description: Advanced SQL queries for healthcare analytics
----------------------------------------------------- */
+/* =====================================================
+   Healthcare Analytics – Advanced SQL
+===================================================== */
 
--- 1. Total patients and visits
-SELECT 
+-- Total patients and visits
+SELECT
     COUNT(DISTINCT patient_id) AS total_patients,
     COUNT(visit_id) AS total_visits
 FROM healthcare_visits;
 
--- 2. Age group classification
-SELECT 
+-- Patient distribution by age group
+SELECT
     CASE
         WHEN age < 18 THEN 'Below 18'
         WHEN age BETWEEN 18 AND 35 THEN '18-35'
@@ -28,18 +26,18 @@ GROUP BY
         ELSE 'Above 55'
     END;
 
--- 3. Readmission rate by department
+-- Department-wise readmission rate
 SELECT
     department,
     COUNT(*) AS total_admissions,
     SUM(CASE WHEN readmitted = 'Y' THEN 1 ELSE 0 END) AS readmissions,
     ROUND(
-        SUM(CASE WHEN readmitted = 'Y' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2
+        SUM(CASE WHEN readmitted = 'Y' THEN 1 ELSE 0 END) * 100 / COUNT(*), 2
     ) AS readmission_rate
 FROM healthcare_visits
 GROUP BY department;
 
--- 4. High-risk patients (multiple visits)
+-- High frequency patients
 SELECT
     patient_id,
     COUNT(visit_id) AS visit_count
@@ -47,10 +45,10 @@ FROM healthcare_visits
 GROUP BY patient_id
 HAVING COUNT(visit_id) > 3;
 
--- 5. Monthly visit trend
+-- Monthly visit trend
 SELECT
     TO_CHAR(visit_date, 'YYYY-MM') AS visit_month,
-    COUNT(*) AS visits
+    COUNT(*) AS total_visits
 FROM healthcare_visits
 GROUP BY TO_CHAR(visit_date, 'YYYY-MM')
 ORDER BY visit_month;
